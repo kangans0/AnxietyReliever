@@ -1,0 +1,137 @@
+/* Overall Page */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #e0f7fa, #e1bee7); /* soothing gradient */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Header */
+  header {
+    background: #6a11cb;
+    background: linear-gradient(to right, #2575fc, #6a11cb);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Main Content */
+  main {
+    padding: 2rem;
+    flex: 1;
+  }
+  
+  /* Each Section */
+  section {
+    background: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, background 0.3s ease;
+  }
+  
+  /* Section Hover Effect */
+  section:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 1);
+  }
+  
+  /* Buttons */
+  button {
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    margin-top: 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+  
+  /* Button Hover */
+  button:hover {
+    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+    transform: scale(1.05);
+  }
+  
+  /* Timer Display */
+  #timer-display {
+    font-size: 3rem;
+    margin-top: 1rem;
+    color: #6a11cb;
+    font-weight: bold;
+  }
+  
+  /* List (Mood Tracker, Exam Tips) */
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  ul li {
+    margin-bottom: 0.8rem;
+    padding: 0.5rem;
+    background: #f3e5f5;
+    border-radius: 8px;
+    transition: background 0.3s;
+  }
+  
+  /* List Hover */
+  ul li:hover {
+    background: #e1bee7;
+  }
+  
+  /* Inputs */
+  input[type="text"] {
+    padding: 0.7rem;
+    width: 70%;
+    margin-top: 1rem;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: box-shadow 0.3s;
+  }
+  
+  /* Input Focus Effect */
+  input[type="text"]:focus {
+    box-shadow: 0 0 10px #6a11cb;
+  }
+  
+  /* Joke Text */
+  #joke-text {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: #333;
+    font-style: italic;
+  }
+  @keyframes pop {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+  }
+  
+  /* Points */
+  #points {
+    font-size: 2.5rem;
+    color: #ff4081;
+    font-weight: bold;
+  }
+  
+  /* Links */
+  a {
+    color: #6a11cb;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  a:hover {
+    color: #2575fc;
+  }
+  

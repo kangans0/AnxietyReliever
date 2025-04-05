@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Exam Anxiety Reducer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>🧠 Exam Anxiety Reducer</h1>
+  </header>
+
+  <main>
+
+    <section id="anxiety-quiz">
+      <h2>🧠 Anxiety Self-Assessment</h2>
+      <form id="quiz-form">
+        <div id="quiz-questions"></div>
+        <button type="submit">Submit Quiz</button>
+      </form>
+      <div id="quiz-result" style="margin-top:20px;"></div>
+    </section>
+
+    <section id="relax">
+      <h2>Breathing Exercise</h2>
+      
+      <!-- ✨ Added feminine voice selector here -->
+      <label for="voice-select">Choose a Voice:</label>
+    <select id="voice-select" style="margin-bottom: 10px; padding: 8px; border-radius: 8px; border: 1px solid #ccc; background: #f9f9f9; font-size: 16px;">
+        <option value="">Select a Voice</option>
+        <option value="feminine">🎀 Feminine Voice</option>
+        <option value="male">🎩 Male Voice</option>
+    </select>
+      
+      <br>
+
+      <button onclick="startBreathing()">Start Breathing</button>
+      <button onclick="pauseBreathing()">Pause</button>
+      <button onclick="resumeBreathing()">Resume</button>
+      <div id="breathing-guide" style="margin-top: 20px; font-size: 24px;"></div>
+    </section>
+
+    <section id="jokes">
+      <h2>Need a Laugh?</h2>
+      <button onclick="getJoke()">Tell me a Joke</button>
+      <p id="joke-text"></p>
+    </section>
+
+    <section id="mood-tracker">
+      <h2>📝 Mood Tracker</h2>
+      <select id="mood-select">
+        <option value="">Select your mood</option>
+        <option value="😊 Happy">😊 Happy</option>
+        <option value="😔 Sad">😔 Sad</option>
+        <option value="😖 Stressed">😖 Stressed</option>
+        <option value="😄 Excited">😄 Excited</option>
+        <option value="😌 Calm">😌 Calm</option>
+        <option value="😠 Angry">😠 Angry</option>
+      </select>
+      <button onclick="logMood()" style="margin-left: 10px;">Log Mood</button>
+      <ul id="mood-list" style="margin-top: 20px; list-style-type: none; padding: 0;"></ul>
+    </section>
+
+    <section id="timer">
+        <h2>Study Timer</h2>
+      
+        <div id="timer-display" style="font-size: 32px; margin-bottom: 10px;">25:00</div>
+      
+        <input type="number" id="timer-minutes" placeholder="Enter minutes" style="margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #ccc; width: 150px; font-size: 16px;">
+        <button onclick="setCustomTimer()" style="margin-left: 5px;">Set Timer</button>
+      
+        <br><br>
+      
+        <button onclick="startTimer()">Start</button>
+        <button onclick="pauseTimer()">⏸️</button>
+        <button onclick="resetTimer()">🔄</button>
+      
+        <div id="congrats-message" style="display: none; margin-top: 20px; font-size: 24px; color: green; animation: pop 1s infinite alternate;">
+          🎉 Congratulations! You finished a session! 🎉
+        </div>
+      
+        <!-- Add a hidden audio tag -->
+        <audio id="congrats-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b04b35b1fb.mp3?filename=success-1-6297.mp3" preload="auto"></audio>
+      </section>
+      
+      
+
+    <section id="resources">
+      <h2>Helpful Resources</h2>
+      <ul>
+        <li><a href="https://www.headspace.com/meditation/meditation-for-students" target="_blank">Meditation for Students</a></li>
+        <li><a href="https://www.healthline.com/health/anxiety" target="_blank">Dealing with Anxiety</a></li>
+        <li><a href="https://pomofocus.io/" target="_blank">Online Pomodoro Timer</a></li>
+      </ul>
+    </section>
+
+    <section id="exam-guide">
+      <h2>Exam Day Tips</h2>
+      <ul>
+        <li>Get 7-8 hours of sleep</li>
+        <li>Eat a healthy breakfast</li>
+        <li>Arrive early at the exam center</li>
+        <li>Stay calm, deep breath!</li>
+      </ul>
+    </section>
+
+    <section id="gamification">
+      <h2>🏆 Your Points</h2>
+      <p id="points">0</p>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
