@@ -371,7 +371,7 @@ function closeModal() {
 }
 
 // Meditation Widget
-let currentMeditation = null;
+// Meditation Widget
 let meditationInterval = null;
 
 function initMeditationWidget() {
@@ -390,54 +390,67 @@ function initMeditationWidget() {
         meditationWidget.style.display = 'none';
         meditationButton.style.display = 'flex';
         meditationWidget.classList.remove('active');
-        stopMeditation(); // Stop playback when minimizing
+        stopMeditation();
     });
 
     meditationSelect.addEventListener('change', () => {
         stopMeditation();
+        const audio = document.getElementById('meditation-audio');
+        const meditationTracks = {
+            'mindfulness-5min': '5 Minute Mindfulness Meditation.mp3',
+            'relaxation-10min': '10 Minute Meditation for Deep Relaxation.mp3',
+            'new-meditation': 'https://cdn.pixabay.com/audio/2023/08/08/audio_5b8b5b3f90.mp3' // New audio track
+        };
+        audio.src = meditationTracks[meditationSelect.value] || '';
     });
 }
 
 function playMeditation() {
     const meditationSelect = document.getElementById('meditation-select').value;
     const player = document.getElementById('meditation-content');
+    const audio = document.getElementById('meditation-audio');
+
     if (!meditationSelect) {
         alert('Please select a meditation!');
         return;
     }
 
-    if (!currentMeditation) {
-        currentMeditation = new Audio();
-        const meditationTracks = {
-            'mindfulness-5min': 'https://cdn.pixabay.com/audio/2023/01/06/audio_4e56d23d21.mp3',
-            'relaxation-10min': 'https://cdn.pixabay.com/audio/2022/03/15/audio_2b7e0bcfa9.mp3'
-        };
-        currentMeditation.src = meditationTracks[meditationSelect];
-        currentMeditation.addEventListener('ended', () => {
+    if (!audio.src) {
+        alert('Please select a valid meditation track!');
+        return;
+    }
+
+    audio.play().then(() => {
+        player.classList.add('playing');
+        updateMeditationProgress();
+        audio.addEventListener('ended', () => {
             stopMeditation();
             addPoints(5);
             showMessage('Great job completing your meditation! 🎉');
-        });
-    }
-
-    currentMeditation.play();
-    player.classList.add('playing');
-    updateMeditationProgress();
+        }, { once: true });
+    }).catch(error => {
+        console.error('Error playing audio:', error);
+        alert('Failed to play meditation. Please try again.');
+    });
 }
 
 function pauseMeditation() {
-    if (currentMeditation) {
-        currentMeditation.pause();
-        document.getElementById('meditation-content').classList.remove('playing');
+    const audio = document.getElementById('meditation-audio');
+    const player = document.getElementById('meditation-content');
+    if (audio && !audio.paused) {
+        audio.pause();
+        player.classList.remove('playing');
         clearInterval(meditationInterval);
     }
 }
 
 function stopMeditation() {
-    if (currentMeditation) {
-        currentMeditation.pause();
-        currentMeditation.currentTime = 0;
-        document.getElementById('meditation-content').classList.remove('playing');
+    const audio = document.getElementById('meditation-audio');
+    const player = document.getElementById('meditation-content');
+    if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        player.classList.remove('playing');
         clearInterval(meditationInterval);
         updateMeditationProgress(true);
     }
@@ -446,6 +459,7 @@ function stopMeditation() {
 function updateMeditationProgress(reset = false) {
     const progress = document.getElementById('meditation-progress');
     const timeDisplay = document.getElementById('meditation-time');
+    const audio = document.getElementById('meditation-audio');
 
     if (reset) {
         progress.value = 0;
@@ -455,9 +469,9 @@ function updateMeditationProgress(reset = false) {
 
     clearInterval(meditationInterval);
     meditationInterval = setInterval(() => {
-        if (currentMeditation && !currentMeditation.paused) {
-            const current = currentMeditation.currentTime;
-            const duration = currentMeditation.duration || 300;
+        if (audio && !audio.paused) {
+            const current = audio.currentTime;
+            const duration = audio.duration || 300;
             const percent = (current / duration) * 100;
             progress.value = percent;
 
@@ -469,7 +483,6 @@ function updateMeditationProgress(reset = false) {
         }
     }, 1000);
 }
-
 // Function to display the message
 function showMessage(msg) {
     const motivationDiv = document.getElementById('motivation-message');
