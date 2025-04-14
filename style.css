@@ -11,7 +11,8 @@ body {
 
 /* Header */
 header {
-    background: linear-gradient(to right, #A8E6CF, #DCE2AA); /* Mint green to soft yellow-green */
+    background: linear-gradient(to right, rgba(168, 230, 207, 0.7), rgba(220, 226, 170, 0.7)); /* Gradient overlay with background image */
+    background-size: cover;
     color: #4A7043; /* Deep forest green */
     padding: 1.5rem;
     text-align: center;
@@ -59,11 +60,14 @@ main {
     display: flex;
     justify-content: center;
     padding-bottom: 100px; /* Space for widgets */
+    background: url('bg2.jpg') no-repeat center center fixed; /* Added background image */
+    background-size: cover;
 }
 
 /* Each Section */
 .tab-content {
-    background: rgba(255, 255, 255, 0.9); /* White with opacity */
+    background: rgba(255, 255, 255, 0.9)url('bg1.jpg') ; /* Background image with overlay */
+    background-size: cover;
     padding: 2rem;
     border-radius: 20px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
@@ -79,7 +83,8 @@ main {
 
 .tab-content:hover {
     transform: translateY(-5px);
-    background: #FFFFFF; /* Solid white */
+    background: rgba(255, 255, 255, 0.95)url('img.jpg') no-repeat center center fixed;  /* Slightly less transparent on hover */
+    background-size: cover;
 }
 
 /* Buttons */
@@ -98,6 +103,32 @@ button {
 button:hover {
     background: #E6EE9C; /* Light lime */
     transform: scale(1.05);
+}
+
+/* Quiz Slide */
+.quiz-slide {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.quiz-slide.active {
+    opacity: 1;
+}
+
+.quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.quiz-nav button {
+    padding: 0.5rem 1rem;
+    margin: 0;
+}
+
+.quiz-nav button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
 }
 
 /* Tab Images */
@@ -353,14 +384,14 @@ a:hover {
 
 #meditation-button {
     background: linear-gradient(135deg, #A8E6CF, #DCE2AA); /* Mint green to soft yellow-green */
-    color: #4A7043;
+    color: black;
     width: 60px;
     height: 60px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     border: none;
@@ -387,8 +418,8 @@ a:hover {
 }
 
 #meditation-header {
-    background: linear-gradient(135deg, #A8E6CF, #DCE2AA);
-    color: #4A7043;
+    background: linear-gradient(135deg, #eaf3f0, #DCE2AA);
+    color: #4A7043#;
     padding: 15px;
     display: flex;
     justify-content: space-between;
