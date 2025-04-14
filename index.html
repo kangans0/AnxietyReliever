@@ -25,8 +25,14 @@
       <img src="https://images.unsplash.com/photo-1505330622279-bf7d7fc918f4" alt="Notebook for self-reflection" class="tab-image">
       <h2>🧠 Anxiety Self-Assessment</h2>
       <form id="quiz-form">
-        <div id="quiz-questions"></div>
-        <button type="submit">Submit Quiz</button>
+        <div id="quiz-questions">
+          <div id="quiz-slide" class="quiz-slide"></div>
+          <div class="quiz-nav">
+            <button type="button" id="prev-question" disabled>Previous</button>
+            <button type="button" id="next-question">Next</button>
+          </div>
+        </div>
+        <button type="submit" id="submit-quiz" style="display: none;">Submit Quiz</button>
       </form>
       <div id="quiz-result" style="margin-top:20px;"></div>
     </section>
@@ -68,9 +74,7 @@
         <option value="😠 Angry">😠 Angry</option>
       </select>
       <button onclick="logMood()" style="margin-left: 10px;">Log Mood</button>
-      <button onclick="showMoodChart()" style="margin-left: 10px;">View Mood Trends</button>
       <ul id="mood-list" style="margin-top: 20px; list-style-type: none; padding: 0;"></ul>
-      <canvas id="mood-chart" style="margin-top: 20px; display: none;"></canvas>
     </section>
 
     <section id="timer" class="tab-content">
@@ -98,7 +102,6 @@
       <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3" alt="Books and learning" class="tab-image">
       <h2>Helpful Resources</h2>
       <ul>
-        <li><a href="https://www.headspace.com/meditation/meditation-for-students" target="_blank">Meditation for Students</a></li>
         <li><a href="https://www.healthline.com/health/anxiety" target="_blank">Dealing with Anxiety</a></li>
         <li><a href="https://pomofocus.io/" target="_blank">Online Pomodoro Timer</a></li>
       </ul>
@@ -149,7 +152,7 @@
           <option value="mindfulness-5min">5-Min Mindfulness</option>
           <option value="relaxation-10min">10-Min Relaxation</option>
         </select>
-        <audio id="meditation-audio" preload="auto"></audio> <!-- New audio element -->
+        <audio id="meditation-audio" preload="auto"></audio>
         <div class="player-controls" style="margin-top: 10px;">
           <button onclick="playMeditation()" aria-label="Play meditation">▶️</button>
           <button onclick="pauseMeditation()" aria-label="Pause meditation">⏸️</button>
@@ -159,7 +162,7 @@
         <p id="meditation-time" style="text-align: center;">0:00 / 0:00</p>
       </div>
     </div>
-    <button id="meditation-button">🧘 Meditate</button>
+    <button id="meditation-button">🧘</button>
   </div>
 
   <!-- Motivational Quote Modal -->
