@@ -20,22 +20,14 @@ function addPoints(amount) {
     console.log(`Points: ${points}`);
 }
 
-// Initialize Tabs, Quiz, Chart Library, and Widgets
+// Quiz State
+let currentQuestion = 0;
+let answers = new Array(questions.length).fill(null);
+
+// Initialize Tabs, Quiz, and Widgets
 document.addEventListener('DOMContentLoaded', function() {
-    // Display Quiz
-    const quizContainer = document.getElementById('quiz-questions');
-    questions.forEach((q, index) => {
-        const questionBlock = document.createElement('div');
-        questionBlock.innerHTML = `
-            <p><strong>Q${index + 1}:</strong> ${q}</p>
-            <label><input type="radio" name="q${index}" value="0" required> Never</label>
-            <label><input type="radio" name="q${index}" value="1"> Sometimes</label>
-            <label><input type="radio" name="q${index}" value="2"> Often</label>
-            <label><input type="radio" name="q${index}" value="3"> Always</label>
-            <hr>
-        `;
-        quizContainer.appendChild(questionBlock);
-    });
+    // Initialize Quiz
+    showQuestion(currentQuestion);
 
     // Initialize tabs
     initTabs();
@@ -43,20 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize chatbot
     initChatbot();
 
-    // Initialize Chart.js for mood tracker
-    loadChartJSLibrary();
-
     // Initialize meditation widget
     initMeditationWidget();
-});
 
-// Load Chart.js dynamically
-function loadChartJSLibrary() {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
-    script.onload = () => console.log('Chart.js loaded');
-    document.head.appendChild(script);
-}
+    // Add event listeners for quiz navigation
+    document.getElementById('next-question').addEventListener('click', nextQuestion);
+    document.getElementById('prev-question').addEventListener('click', prevQuestion);
+});
 
 // Tab Switching
 function initTabs() {
@@ -70,20 +55,80 @@ function initTabs() {
             button.classList.add('active');
             const tabId = button.getAttribute('data-tab');
             document.getElementById(tabId).classList.add('active');
+            if (tabId !== 'anxiety-quiz') {
+                resetQuiz();
+            }
         });
     });
+}
+
+// Quiz Navigation and Display
+function showQuestion(index) {
+    const quizSlide = document.getElementById('quiz-slide');
+    quizSlide.classList.remove('active');
+    setTimeout(() => {
+        quizSlide.innerHTML = `
+            <p><strong>Q${index + 1}:</strong> ${questions[index]}</p>
+            <label><input type="radio" name="q${index}" value="0" ${answers[index] === 0 ? 'checked' : ''} required> Never</label>
+            <label><input type="radio" name="q${index}" value="1" ${answers[index] === 1 ? 'checked' : ''}> Sometimes</label>
+            <label><input type="radio" name="q${index}" value="2" ${answers[index] === 2 ? 'checked' : ''}> Often</label>
+            <label><input type="radio" name="q${index}" value="3" ${answers[index] === 3 ? 'checked' : ''}> Always</label>
+        `;
+        quizSlide.classList.add('active');
+    }, 500);
+
+    // Update navigation buttons
+    document.getElementById('prev-question').disabled = index === 0;
+    const nextButton = document.getElementById('next-question');
+    if (index === questions.length - 1) {
+        nextButton.style.display = 'none';
+        document.getElementById('submit-quiz').style.display = 'block';
+    } else {
+        nextButton.style.display = 'block';
+        document.getElementById('submit-quiz').style.display = 'none';
+    }
+}
+
+function nextQuestion() {
+    saveAnswer(currentQuestion);
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        showQuestion(currentQuestion);
+    }
+}
+
+function prevQuestion() {
+    saveAnswer(currentQuestion);
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion(currentQuestion);
+    }
+}
+
+function saveAnswer(index) {
+    const answer = document.querySelector(`input[name="q${index}"]:checked`);
+    if (answer) {
+        answers[index] = parseInt(answer.value);
+    }
+}
+
+function resetQuiz() {
+    currentQuestion = 0;
+    answers.fill(null);
+    showQuestion(currentQuestion);
+    document.getElementById('quiz-result').innerHTML = '';
+    document.getElementById('quiz-questions').style.display = 'block';
 }
 
 // Handle Quiz Submission
 document.getElementById('quiz-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    let score = 0;
-    for (let i = 0; i < questions.length; i++) {
-        const answer = document.querySelector(`input[name="q${i}"]:checked`);
-        if (answer) {
-            score += parseInt(answer.value);
-        }
+    saveAnswer(currentQuestion);
+    if (answers.includes(null)) {
+        alert('Please answer all questions before submitting!');
+        return;
     }
+    let score = answers.reduce((sum, answer) => sum + answer, 0);
     const maxScore = questions.length * 3;
     const percentage = (score / maxScore) * 100;
     let message = "";
@@ -113,6 +158,9 @@ document.getElementById('quiz-form').addEventListener('submit', function (e) {
         </div>
     `;
     addPoints(10);
+    // Hide quiz questions and navigation
+    document.getElementById('quiz-questions').style.display = 'none';
+    document.getElementById('submit-quiz').style.display = 'none';
 });
 
 // Breathing Exercise with Animation
@@ -230,7 +278,7 @@ function getJoke() {
     }, 500);
 }
 
-// Mood Tracker with Chart
+// Mood Tracker
 let moodData = JSON.parse(localStorage.getItem('moodData')) || [];
 
 function logMood() {
@@ -247,34 +295,6 @@ function logMood() {
     } else {
         alert('Please select a mood before logging!');
     }
-}
-
-function showMoodChart() {
-    const canvas = document.getElementById('mood-chart');
-    canvas.style.display = 'block';
-    const ctx = canvas.getContext('2d');
-
-    const moodCounts = {};
-    moodData.forEach(entry => {
-        moodCounts[entry.mood] = (moodCounts[entry.mood] || 0) + 1;
-    });
-
-    new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(moodCounts),
-            datasets: [{
-                data: Object.values(moodCounts),
-                backgroundColor: ['#A8E6CF', '#DCE2AA', '#FFCCBC', '#FFAB91', '#F28C82', '#E6EE9C']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'bottom' }
-            }
-        }
-    });
 }
 
 // Timer with Progress Circle
@@ -371,7 +391,6 @@ function closeModal() {
 }
 
 // Meditation Widget
-// Meditation Widget
 let meditationInterval = null;
 
 function initMeditationWidget() {
@@ -399,7 +418,7 @@ function initMeditationWidget() {
         const meditationTracks = {
             'mindfulness-5min': '5 Minute Mindfulness Meditation.mp3',
             'relaxation-10min': '10 Minute Meditation for Deep Relaxation.mp3',
-            'new-meditation': 'https://cdn.pixabay.com/audio/2023/08/08/audio_5b8b5b3f90.mp3' // New audio track
+            'new-meditation': 'https://cdn.pixabay.com/audio/2023/08/08/audio_5b8b5b3f90.mp3'
         };
         audio.src = meditationTracks[meditationSelect.value] || '';
     });
@@ -483,6 +502,7 @@ function updateMeditationProgress(reset = false) {
         }
     }, 1000);
 }
+
 // Function to display the message
 function showMessage(msg) {
     const motivationDiv = document.getElementById('motivation-message');
@@ -551,7 +571,7 @@ async function getBotResponse(message) {
     const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
     const systemPrompt = `
-        You are an Anxiety Support Bot designed to help students manage exam-related stress. 
+        You are an ansiedad Support Bot designed to help students manage exam-related stress. 
         Provide empathetic, concise, and practical responses. 
         Offer suggestions like opening the meditation widget, breathing exercises, study tips, or positive encouragement. 
         Avoid complex jargon and keep the tone warm and supportive. 
