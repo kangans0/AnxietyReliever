@@ -18,11 +18,11 @@
     <button class="tab-button" data-tab="timer">Timer</button>
     <button class="tab-button" data-tab="resources">Resources</button>
     <button class="tab-button" data-tab="exam-guide">Tips</button>
-    <button class="tab-button" data-tab="gamification">Points</button>
   </nav>
 
   <main>
     <section id="anxiety-quiz" class="tab-content active">
+      <img src="https://images.unsplash.com/photo-1505330622279-bf7d7fc918f4" alt="Notebook for self-reflection" class="tab-image">
       <h2>🧠 Anxiety Self-Assessment</h2>
       <form id="quiz-form">
         <div id="quiz-questions"></div>
@@ -32,6 +32,7 @@
     </section>
 
     <section id="relax" class="tab-content">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Calm nature scene" class="tab-image">
       <h2>Breathing Exercise</h2>
       <label for="voice-select">Choose a Voice:</label>
       <select id="voice-select" style="margin-bottom: 10px; padding: 8px; border-radius: 8px; border: 1px solid #ccc; background: #f9f9f9; font-size: 16px;">
@@ -44,15 +45,18 @@
       <button onclick="pauseBreathing()">Pause</button>
       <button onclick="resumeBreathing()">Resume</button>
       <div id="breathing-guide" style="margin-top: 20px; font-size: 24px;"></div>
+      <div id="breathing-circle" class="breathing-circle"></div>
     </section>
 
     <section id="jokes" class="tab-content">
+      <img src="https://images.unsplash.com/photo-1519750783826-e2420f4d687f" alt="Cheerful background" class="tab-image">
       <h2>Need a Laugh?</h2>
       <button onclick="getJoke()">Tell me a Joke</button>
-      <p id="joke-text"></p>
+      <p id="joke-text" class="joke-text"></p>
     </section>
 
     <section id="mood-tracker" class="tab-content">
+      <img src="https://images.unsplash.com/photo-1557683316-973673baf926" alt="Abstract emotions" class="tab-image">
       <h2>📝 Mood Tracker</h2>
       <select id="mood-select">
         <option value="">Select your mood</option>
@@ -64,25 +68,34 @@
         <option value="😠 Angry">😠 Angry</option>
       </select>
       <button onclick="logMood()" style="margin-left: 10px;">Log Mood</button>
+      <button onclick="showMoodChart()" style="margin-left: 10px;">View Mood Trends</button>
       <ul id="mood-list" style="margin-top: 20px; list-style-type: none; padding: 0;"></ul>
+      <canvas id="mood-chart" style="margin-top: 20px; display: none;"></canvas>
     </section>
 
     <section id="timer" class="tab-content">
+      <img src="https://images.unsplash.com/photo-1494232410401-ad00d5433cfa" alt="Study desk" class="tab-image">
       <h2>Study Timer</h2>
-      <div id="timer-display" style="font-size: 32px; margin-bottom: 10px;">25:00</div>
+      <div class="timer-container">
+        <svg class="progress-ring" width="120" height="120">
+          <circle class="progress-ring__circle" stroke="#A8E6CF" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+        </svg>
+        <div id="timer-display" style="font-size: 32px; margin-bottom: 10px;">25:00</div>
+      </div>
       <input type="number" id="timer-minutes" placeholder="Enter minutes" style="margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #ccc; width: 150px; font-size: 16px;">
-      <button onclick="setCustomTimer()" style="margin-left: 5px;">Set Timer</button>
+      <button onclick="setCustomTimer()">Set Timer</button>
       <br><br>
       <button onclick="startTimer()">Start</button>
       <button onclick="pauseTimer()">⏸️</button>
       <button onclick="resetTimer()">🔄</button>
-      <div id="congrats-message" style="display: none; margin-top: 20px; font-size: 24px; color: green; animation: pop 1s infinite alternate;">
+      <div id="congrats-message" style="display: none; margin-top: 20px; font-size: 24px; color: #4A7043; animation: pop 1s infinite alternate;">
         🎉 Congratulations! You finished a session! 🎉
       </div>
       <audio id="congrats-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b04b35b1fb.mp3?filename=success-1-6297.mp3" preload="auto"></audio>
     </section>
 
     <section id="resources" class="tab-content">
+      <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3" alt="Books and learning" class="tab-image">
       <h2>Helpful Resources</h2>
       <ul>
         <li><a href="https://www.headspace.com/meditation/meditation-for-students" target="_blank">Meditation for Students</a></li>
@@ -92,6 +105,7 @@
     </section>
 
     <section id="exam-guide" class="tab-content">
+      <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8" alt="Confident student" class="tab-image">
       <h2>Exam Day Tips</h2>
       <ul>
         <li>Get 7-8 hours of sleep</li>
@@ -99,11 +113,7 @@
         <li>Arrive early at the exam center</li>
         <li>Stay calm, deep breath!</li>
       </ul>
-    </section>
-
-    <section id="gamification" class="tab-content">
-      <h2>🏆 Your Points</h2>
-      <p id="points">0</p>
+      <button onclick="showMotivationalQuote()" style="margin-top: 20px;">Get a Motivational Quote</button>
     </section>
   </main>
 
@@ -125,6 +135,41 @@
     <button id="chat-button">💬 Chat</button>
   </div>
 
+  <!-- Meditation as floating widget -->
+  <div id="meditation-container">
+    <div id="meditation-widget">
+      <div id="meditation-header">
+        <h3>🧘 Guided Meditation</h3>
+        <button id="minimize-meditation">−</button>
+      </div>
+      <div id="meditation-content">
+        <img src="https://images.unsplash.com/photo-1506126279646-a697353d3166" alt="Zen garden" class="meditation-image">
+        <select id="meditation-select">
+          <option value="">Select a meditation</option>
+          <option value="mindfulness-5min">5-Min Mindfulness</option>
+          <option value="relaxation-10min">10-Min Relaxation</option>
+        </select>
+        <div class="player-controls" style="margin-top: 10px;">
+          <button onclick="playMeditation()" aria-label="Play meditation">▶️</button>
+          <button onclick="pauseMeditation()" aria-label="Pause meditation">⏸️</button>
+          <button onclick="stopMeditation()" aria-label="Stop meditation">⏹️</button>
+        </div>
+        <progress id="meditation-progress" value="0" max="100" style="width: 100%; margin-top: 10px;"></progress>
+        <p id="meditation-time" style="text-align: center;">0:00 / 0:00</p>
+      </div>
+    </div>
+    <button id="meditation-button">🧘 Meditate</button>
+  </div>
+
+  <!-- Motivational Quote Modal -->
+  <div id="quote-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal()">×</span>
+      <p id="motivational-quote"></p>
+    </div>
+  </div>
+
+  <div id="motivation-message" style="display: none; margin-top: 20px; font-size: 18px; color: #F28C82; text-align: center;"></div>
   <script src="script.js"></script>
 </body>
 </html>
