@@ -3,7 +3,7 @@ const questions = [
     "I feel nervous before exams.",
     "I have trouble sleeping before important days.",
     "I often feel overwhelmed with studies.",
-    "I can’t focus easily when studying.",
+    "I can't focus easily when studying.",
     "I procrastinate because of fear of failure.",
     "I feel physical symptoms like sweating, shaking before exams.",
     "I doubt my preparation even if I studied well.",
@@ -12,20 +12,48 @@ const questions = [
     "I imagine worst-case scenarios before exams."
   ];
   
-  // Display Quiz
-  const quizContainer = document.getElementById('quiz-questions');
-  questions.forEach((q, index) => {
-    const questionBlock = document.createElement('div');
-    questionBlock.innerHTML = `
-      <p><strong>Q${index + 1}:</strong> ${q}</p>
-      <label><input type="radio" name="q${index}" value="0" required> Never</label>
-      <label><input type="radio" name="q${index}" value="1"> Sometimes</label>
-      <label><input type="radio" name="q${index}" value="2"> Often</label>
-      <label><input type="radio" name="q${index}" value="3"> Always</label>
-      <hr>
-    `;
-    quizContainer.appendChild(questionBlock);
+  // Initialize Tabs and Quiz
+  document.addEventListener('DOMContentLoaded', function() {
+    // Display Quiz
+    const quizContainer = document.getElementById('quiz-questions');
+    questions.forEach((q, index) => {
+      const questionBlock = document.createElement('div');
+      questionBlock.innerHTML = `
+        <p><strong>Q${index + 1}:</strong> ${q}</p>
+        <label><input type="radio" name="q${index}" value="0" required> Never</label>
+        <label><input type="radio" name="q${index}" value="1"> Sometimes</label>
+        <label><input type="radio" name="q${index}" value="2"> Often</label>
+        <label><input type="radio" name="q${index}" value="3"> Always</label>
+        <hr>
+      `;
+      quizContainer.appendChild(questionBlock);
+    });
+  
+    // Initialize tabs
+    initTabs();
+  
+    // Initialize chatbot
+    initChatbot();
   });
+  
+  // Tab Switching
+  function initTabs() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+  
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons and contents
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+  
+        // Add active class to clicked button and corresponding content
+        button.classList.add('active');
+        const tabId = button.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+  }
   
   // Handle Quiz Submission
   document.getElementById('quiz-form').addEventListener('submit', function (e) {
@@ -55,7 +83,7 @@ const questions = [
     } else {
       message = `
         <h3>😰 High Anxiety</h3>
-        <p>It’s okay to feel stressed. Focus on <strong>Progressive Muscle Relaxation (PMR)</strong> daily to reduce tension.</p>
+        <p>It's okay to feel stressed. Focus on <strong>Progressive Muscle Relaxation (PMR)</strong> daily to reduce tension.</p>
         <p><strong>Tip:</strong> Consider talking to a counselor if needed. Journaling your feelings every night helps!</p>
       `;
     }
@@ -69,57 +97,53 @@ const questions = [
   });
   
   // Breathing Exercise
-  // Breathing Exercise
-let breathingPaused = false;
-let breathingTimeout;
-let breathingIndex = 0;
-
-function startBreathing() {
-  const guide = document.getElementById('breathing-guide');
-  guide.textContent = "Get ready...";
+  let breathingPaused = false;
+  let breathingTimeout;
+  let breathingIndex = 0;
   
-  const steps = [
-    { text: "Breathe in", duration: 4000 },
-    { text: "Hold", duration: 4500 },
-    { text: "Breathe out", duration: 4000 },
-    { text: "Hold", duration: 4500 }
-  ];
+  function startBreathing() {
+    const guide = document.getElementById('breathing-guide');
+    guide.textContent = "Get ready...";
+    
+    const steps = [
+      { text: "Breathe in", duration: 4000 },
+      { text: "Hold", duration: 4500 },
+      { text: "Breathe out", duration: 4000 },
+      { text: "Hold", duration: 4500 }
+    ];
+    
+    breathingIndex = 0;
   
-  breathingIndex = 0;
-
-  function nextStep() {
-    if (breathingPaused) return; // Pause if needed
-
-    const current = steps[breathingIndex];
-    guide.textContent = current.text;
-    speak(current.text); // 🔥 Speak the step
-
-    breathingTimeout = setTimeout(() => {
-      breathingIndex = (breathingIndex + 1) % steps.length;
-      nextStep();
-    }, current.duration);
+    function nextStep() {
+      if (breathingPaused) return; // Pause if needed
+  
+      const current = steps[breathingIndex];
+      guide.textContent = current.text;
+      speak(current.text); // Speak the step
+  
+      breathingTimeout = setTimeout(() => {
+        breathingIndex = (breathingIndex + 1) % steps.length;
+        nextStep();
+      }, current.duration);
+    }
+  
+    nextStep();
   }
-
-  nextStep();
-}
-
-function pauseBreathing() {
-  breathingPaused = true;
-  clearTimeout(breathingTimeout);
-}
-
-function resumeBreathing() {
-  if (breathingPaused) {
-    breathingPaused = false;
-    startBreathing();
+  
+  function pauseBreathing() {
+    breathingPaused = true;
+    clearTimeout(breathingTimeout);
   }
-}
-
-// 🔊 Function to speak text
-// 🔊 Function to speak text with a feminine voice
-// 🔊 Updated function to speak text with different voices
-// 🔊 Function to speak text with a feminine voice
-function speak(text) {
+  
+  function resumeBreathing() {
+    if (breathingPaused) {
+      breathingPaused = false;
+      startBreathing();
+    }
+  }
+  
+  // Function to speak text
+  function speak(text) {
     if ('speechSynthesis' in window) {
       const synth = window.speechSynthesis;
       const utterance = new SpeechSynthesisUtterance(text);
@@ -129,32 +153,38 @@ function speak(text) {
   
       function setVoice() {
         const voices = synth.getVoices();
-        // Try to find a female-like voice
-        const femaleVoice = voices.find(voice => 
-          voice.name.toLowerCase().includes('female') || 
-          voice.name.toLowerCase().includes('samantha') || 
-          voice.name.toLowerCase().includes('zira') || 
-          voice.name.toLowerCase().includes('google us english')
-        );
-        if (femaleVoice) {
-          utterance.voice = femaleVoice;
+        const voiceSelect = document.getElementById('voice-select');
+        const selectedVoice = voiceSelect ? voiceSelect.value : 'feminine';
+        
+        let targetVoice;
+        if (selectedVoice === 'male') {
+          targetVoice = voices.find(voice => 
+            voice.name.toLowerCase().includes('male') || 
+            voice.name.toLowerCase().includes('daniel') || 
+            voice.name.toLowerCase().includes('david')
+          );
+        } else {
+          targetVoice = voices.find(voice => 
+            voice.name.toLowerCase().includes('female') || 
+            voice.name.toLowerCase().includes('samantha') || 
+            voice.name.toLowerCase().includes('zira') || 
+            voice.name.toLowerCase().includes('google us english')
+          );
+        }
+        
+        if (targetVoice) {
+          utterance.voice = targetVoice;
         }
         synth.speak(utterance);
       }
   
       if (synth.getVoices().length === 0) {
-        // Voices not loaded yet
         synth.onvoiceschanged = setVoice;
       } else {
-        // Voices already available
         setVoice();
       }
     }
   }
-  
-  
-  
-  
   
   // Get Joke from API
   function getJoke() {
@@ -241,7 +271,6 @@ function speak(text) {
     document.getElementById('congrats-message').style.display = 'none';
   }
   
-  
   // Gamification Points
   let points = 0;
   function addPoints(p) {
@@ -249,3 +278,111 @@ function speak(text) {
     document.getElementById('points').textContent = points;
   }
   
+  // Chatbot functionality
+  function initChatbot() {
+    const chatButton = document.getElementById('chat-button');
+    const chatWidget = document.getElementById('chat-widget');
+    const minimizeChat = document.getElementById('minimize-chat');
+    const sendMessage = document.getElementById('send-message');
+    const userMessageInput = document.getElementById('user-message');
+    const chatMessages = document.getElementById('chat-messages');
+  
+    // Toggle chat widget visibility
+    chatButton.addEventListener('click', function() {
+      chatWidget.style.display = 'flex';
+      chatButton.style.display = 'none';
+    });
+  
+    // Minimize chat widget
+    minimizeChat.addEventListener('click', function() {
+      chatWidget.style.display = 'none';
+      chatButton.style.display = 'flex';
+    });
+  
+    // Send message function
+    function sendUserMessage() {
+      const message = userMessageInput.value.trim();
+      if (message !== '') {
+        // Add user message to chat
+        addMessage(message, 'user');
+        userMessageInput.value = '';
+        
+        // Get bot response from Gemini API
+        getBotResponse(message).then(botResponse => {
+          addMessage(botResponse, 'bot');
+        }).catch(error => {
+          addMessage("Sorry, I couldn't process that. Try again!", 'bot');
+        });
+  
+        // Add points for interaction
+        addPoints(1);
+      }
+    }
+  
+    // Send message on button click
+    sendMessage.addEventListener('click', sendUserMessage);
+  
+    // Send message on Enter key
+    userMessageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendUserMessage();
+      }
+    });
+  
+    // Add a message to the chat
+    function addMessage(message, sender) {
+      const messageElement = document.createElement('div');
+      messageElement.className = sender === 'user' ? 'user-message' : 'bot-message';
+      messageElement.textContent = message;
+      chatMessages.appendChild(messageElement);
+      
+      // Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  }
+  
+  // Gemini API integration
+  async function getBotResponse(message) {
+    const apiKey = 'AIzaSyBvHsgoW9YGEIGMfnOfyrUnt16w2jaHftU'; // Replace with your Gemini API key (secure in production)
+    const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+  
+    // Define the system prompt to customize the bot's behavior
+    const systemPrompt = `
+      You are an Anxiety Support Bot designed to help students manage exam-related stress. 
+      Provide empathetic, concise, and practical responses. 
+      Offer suggestions like breathing exercises, study tips, or positive encouragement. 
+      Avoid complex jargon and keep the tone warm and supportive. 
+      If the user expresses negative feelings, acknowledge them gently and suggest a specific action from the website (e.g., breathing exercise, mood tracker, or joke section).
+    `;
+  
+    try {
+      const response = await fetch(`${apiUrl}?key=${apiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: systemPrompt },
+                { text: `User: ${message}` }
+              ]
+            }
+          ]
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch response from Gemini API');
+      }
+  
+      const data = await response.json();
+      const botResponse = data.candidates[0].content.parts[0].text.trim();
+      return botResponse;
+  
+    } catch (error) {
+      console.error('Error with Gemini API:', error);
+      return 'Oops, something went wrong. How about trying our breathing exercise to relax?';
+    }
+  }
